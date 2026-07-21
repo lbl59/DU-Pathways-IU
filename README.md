@@ -15,6 +15,28 @@ A meta-repository creates a single point of access for someone to find all of th
 
 **your Paper Title here (once published, include a link to the text)**
 
+## Branch and interactive site setup
+
+Use this branch strategy to maintain a stable base while developing the interactive Streamlit site:
+
+```bash
+# create local main if this clone does not already have it
+git checkout -b main
+git push -u origin main
+
+# create the interactive development branch from main
+git checkout -b interactive-repo
+git push -u origin interactive-repo
+```
+
+The interactive app entrypoint in this repository is `/streamlit_app.py`.
+
+Run it locally with:
+
+```bash
+streamlit run streamlit_app.py
+```
+
 First Last<sup>1\*</sup>, First Last<sup>1</sup>,  and First Last<sup>1, 2</sup>
 
 <sup>1 </sup>Pacific Northwest National Laboratory, Richland, WA, USA.
@@ -89,4 +111,3 @@ Use the scripts found in the `figures` directory to reproduce the figures used i
 | --- | --- | --- | --- |
 | 1, 2 | `generate_plot.py` | Description of figure, ie. "Plots the difference between our two scenarios" | `python3 generate_plot.py -input /path/to/inputs -output /path/to/outuptdir` |
 | 3 | `generate_figure.py` | Description of figure, ie. "Shows how the mean and peak differences are calculated" | `python3 generate_figure.py -input /path/to/inputs -output /path/to/outuptdir` |
-
