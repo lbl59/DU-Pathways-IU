@@ -15,13 +15,13 @@ GALLERY_COLUMNS = 3
 
 
 def _label_from_filename(path: Path) -> str:
-    """Turn '1_Figure_1_Explorer.py' into 'Figure 1 Performance Objectives'."""
+    """Turn '1_Figure_1_Performance_Objectives.py' into 'Figure 1 Performance Objectives'."""
     stem = re.sub(r"^\d+_?", "", path.stem)  # drop Streamlit's leading order number
     return stem.replace("_", " ").strip()
 
 
 def _figure_number(path: Path) -> str | None:
-    """Turn '1_Figure_1_Explorer.py' into '1'."""
+    """Turn '1_Figure_1_Performance_Objectives.py' into '1'."""
     match = re.match(r"^(\d+)_", path.stem)
     return match.group(1) if match else None
 
