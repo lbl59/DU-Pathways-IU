@@ -134,7 +134,6 @@ HOTSPOTS = [
 ]
 
 render_hotspot_explorer(
-    page_title="Figure 2 - Robustness",
     page_heading="Figure 2: Robustness Under Worst-Case 10th-Percentile Conditions — Interactive Explorer",
     intro=(
         "This figure compares how **robust** each utility's candidate pathway "

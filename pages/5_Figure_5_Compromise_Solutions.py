@@ -172,7 +172,6 @@ HOTSPOTS = [
 ]
 
 render_hotspot_explorer(
-    page_title="Figure 5 - Compromise Solutions",
     page_heading="Figure 5: Baseline vs. IU Compromise Pathway Strategies — Interactive Explorer",
     intro=(
         "This figure compares two specific, representative 'Social Planner' "

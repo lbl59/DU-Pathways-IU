@@ -129,7 +129,6 @@ HOTSPOTS = [
 ]
 
 render_hotspot_explorer(
-    page_title="Figure 4 - Decision Variable Distributions",
     page_heading="Figure 4: Decision Variable (ROF Trigger) Distributions — Interactive Explorer",
     intro=(
         "This figure shows how often pathway strategies rely on each of three "

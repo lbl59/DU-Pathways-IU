@@ -137,7 +137,6 @@ HOTSPOTS = [
 ]
 
 render_hotspot_explorer(
-    page_title="Figure 3 - Performance Degradation",
     page_heading="Figure 3: Performance Degradation Distributions — Interactive Explorer",
     intro=(
         "This figure examines each utility's (and the region's) vulnerability "

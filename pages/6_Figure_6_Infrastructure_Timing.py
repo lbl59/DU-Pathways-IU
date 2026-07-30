@@ -113,7 +113,6 @@ HOTSPOTS = [
 ]
 
 render_hotspot_explorer(
-    page_title="Figure 6 - Infrastructure Timing & Frequency",
     page_heading="Figure 6: Infrastructure Construction Timing and Frequency — Interactive Explorer",
     intro=(
         "This figure compares *when* and *how often* each utility builds its "

@@ -23,7 +23,6 @@ def _load_image_as_data_uri(path: Path) -> tuple[str, int, int]:
 
 def render_hotspot_explorer(
     *,
-    page_title: str,
     page_heading: str,
     intro: str,
     image_relpath: str,
@@ -40,10 +39,15 @@ def render_hotspot_explorer(
     ``text``), and a unique ``state_key`` so that multiple explorer pages can
     coexist without clobbering each other's ``st.session_state``.
 
+    Note: this function intentionally does *not* call
+    ``st.set_page_config`` — that can only be called once per app run, and
+    ``streamlit_app.py`` (the ``st.navigation`` router) already calls it once
+    for the whole app. Each page's browser-tab/sidebar title instead comes
+    from the ``title=`` passed to its ``st.Page(...)`` entry in
+    ``streamlit_app.py``.
+
     Parameters
     ----------
-    page_title:
-        Browser-tab / ``st.set_page_config`` title.
     page_heading:
         Heading shown via ``st.title`` at the top of the page.
     intro:
@@ -62,8 +66,6 @@ def render_hotspot_explorer(
     marker_color:
         Hex color for the hotspot markers.
     """
-    st.set_page_config(page_title=page_title, layout="wide")
-
     image_path = REPO_ROOT / image_relpath
     st.title(page_heading)
     st.write(intro)

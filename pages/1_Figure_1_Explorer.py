@@ -28,8 +28,8 @@ HOTSPOTS = [
         id="panel_a_title", x=275, y=52, panel="(a)",
         title="Baseline DU Optimization",
         text=(
-            "This half of the figure shows results from a conventional "
-            "Direct-Utility (DU) search: the optimization only ever saw the "
+            "This half of the figure shows results from the traditional "
+            "DU Pathways search: the optimization only ever saw the "
             "*expected* (average) future when scoring candidate strategies. "
             "It never saw how they'd behave under a stressful, low-probability "
             "future — that's tested separately in panel (d)."
@@ -195,7 +195,6 @@ HOTSPOTS = [
 ]
 
 render_hotspot_explorer(
-    page_title="Figure 1 - Performance Tradeoffs",
     page_heading="Figure 1: Regional Performance Tradeoffs — Interactive Explorer",
     intro=(
         "This figure compares candidate water-supply pathway strategies found by two "

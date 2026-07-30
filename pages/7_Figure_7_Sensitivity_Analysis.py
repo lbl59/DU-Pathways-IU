@@ -170,7 +170,6 @@ HOTSPOTS = [
 ]
 
 render_hotspot_explorer(
-    page_title="Figure 7 - Sensitivity Analysis",
     page_heading="Figure 7: Delta Moment-Independent Sensitivity Analysis — Interactive Explorer",
     intro=(
         "This figure shows how sensitive each utility's performance is to "
