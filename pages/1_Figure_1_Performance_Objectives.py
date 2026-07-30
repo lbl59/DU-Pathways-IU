@@ -16,7 +16,7 @@ HOTSPOTS = [
             "**IU-DU Optimization** that searched using the worst 10th-percentile "
             "(WC10) of simulated futures as well. The top row (a, c) shows "
             "5-objective tradeoffs as parallel-coordinate lines; the bottom row "
-            "(b, d) shows the same strategies as 3D bubble plots, first under "
+            "(b, d) shows the same strategies as 3D scatter plots, first under "
             "expected conditions, then under worst-case stress. The overall "
             "story: baseline strategies look excellent under expected conditions "
             "but degrade the most once uncertainty is introduced, while IU-DU "
