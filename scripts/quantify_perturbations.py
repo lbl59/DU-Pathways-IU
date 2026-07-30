@@ -32,6 +32,7 @@ def calc_freq_degradation(sol_num, objs_names, objs_original_full_w_regional, ob
     freq_degradation = np.zeros(objs_ptb_w_regional.shape[1], dtype=int)
     percent_degradation = np.zeros((objs_ptb_w_regional.shape[0], objs_ptb_w_regional.shape[1]), dtype=float)
     percent_degradation_weighted = np.zeros((objs_ptb_w_regional.shape[0], objs_ptb_w_regional.shape[1]), dtype=float)
+
     # iterate over each column and count how many times perturbed > original
     for c in range(objs_ptb_w_regional_arr.shape[1]):
         objs_original_val = objs_original_w_regional_arr[c]
@@ -61,7 +62,6 @@ def calc_freq_degradation(sol_num, objs_names, objs_original_full_w_regional, ob
         if np.isnan(percent_degradation[:, c]).any():
             warnings.warn(f'NaN values found in percent_degradation for objective {col_names[c]}')
 
-    #percent_degradation_df = pd.DataFrame(percent_degradation, columns=objs_ptb_w_regional.columns, index=None)
     return freq_degradation, percent_degradation, percent_degradation_weighted
 
 def calc_freq_degradation_allsols(objectives_original, objs_names, refset_name, sim_mode):
@@ -96,20 +96,17 @@ def calc_freq_degradation_allsols(objectives_original, objs_names, refset_name, 
         freq_degradation_all[sol_num, :] = freq_degradation
         percent_degradation_df = pd.DataFrame(percent_degradation, columns=objectives_names_full, index=None)
         percent_degradation_weighted_df = pd.DataFrame(percent_degradation_weighted, columns=objectives_names_full, index=None)
-        #percent_degradation_max[sol_num, :] = percent_degradation_df.max().values
         percent_degradation_max[sol_num, :] = percent_degradation_weighted_df.max().values
         percent_degradation_median[sol_num, :] = percent_degradation_weighted_df.mean().values
-        #np.savetxt(f"{sol_directory}percent_degradation_sol{sol_num}_sim_{sim_mode}.csv", percent_degradation, delimiter=",")
-        #percent_degradation_df.to_csv(f"{directory}/percent_degradation/sol{sol_num}_sim_{sim_mode}.csv", index=False)
-        #percent_degradation_weighted_df.to_csv(f"{directory}/percent_degradation/sol{sol_num}_sim_{sim_mode}_weighted.csv", index=False)
-        
+
     # save freq_degradation_all to csv
-    freq_degradation_all_df = pd.DataFrame(freq_degradation_all, columns=objectives_names_full, index=None)
-    #freq_degradation_all_df.to_csv(f'perturbations_{refset_name}/freq_degradation_allsols_{refset_name}_{sim_mode}_new.csv', index=False)
     percent_degradation_max_df = pd.DataFrame(percent_degradation_max, columns=objectives_names_full, index=None)
-    #percent_degradation_max_df.to_csv(f'perturbations_{refset_name}/percent_degradation_max_allsols_{refset_name}_{sim_mode}_new.csv', index=False)
-    percent_degradation_median_df = pd.DataFrame(percent_degradation_median, columns=objectives_names_full, index=None)
-    percent_degradation_median_df.to_csv(f'perturbations_{refset_name}/percent_degradation_mean_allsols_{refset_name}_{sim_mode}_new.csv', index=False)
+
+    # check if directory exists, if not, create it
+    if not os.path.isdir(f'perturbations_{refset_name}'):
+        os.makedirs(f'perturbations_{refset_name}')
+
+    percent_degradation_max_df.to_csv(f'perturbations_{refset_name}/percent_degradation_max_allsols_{refset_name}_{sim_mode}.csv', index=False)
 
 def calc_degradation_stats_allsols(objs_original_df, objs_headers, refset_name, sim_mode, save_files=False):
     # calculate the statistical measures for each objective across all perturbations 
@@ -138,9 +135,7 @@ def calc_degradation_stats_allsols(objs_original_df, objs_headers, refset_name, 
                 degradation_p90[sol_num, i] = 0.0
                 degradation_exp[sol_num, i] = 0.0
                 degradation_median[sol_num, i] = 0.0
-                #degradation_iqr[sol_num, i] = 0.0
                 degradation_max[sol_num, i] = 0.0
-                #degradation_var[sol_num, i] = 0.0
 
     # save the degradation statistics as csv files
     if save_files == True:

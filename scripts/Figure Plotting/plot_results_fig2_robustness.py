@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 import seaborn as sns
-from helper_functions_robustness import *
+from ..helper_functions_robustness import *
 
 # setup attributes to be set by user
 sim_mode = 'p90' 

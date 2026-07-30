@@ -1,32 +1,56 @@
-"""
-Boxplot: Median Timing Distribution Colored by Construction Frequency Change
-====================================================================================
-
-This creates a set of boxplot where:
-- Each boxplot shows distribution of median construction timing across perturbations
-- Color indicates how much the construction FREQUENCY changes
-  (i.e., percentage of realizations that build the infrastructure)
-
-Key Innovation:
-- Original pathway: X% of realizations build infrastructure
-- Perturbed pathways: Y% of realizations build infrastructure
-- Color intensity: |Y - X| = how much construction likelihood changes
-
-Darker color = Infrastructure gets built more frequently under perturbations
-Lighter color = Construction frequency stays similar to original
-"""
-
 import numpy as np
 import pandas as pd
-import sys
+import sys, os
 import matplotlib.pyplot as plt
-from matplotlib.patches import Polygon
+
 from matplotlib.colors import LinearSegmentedColormap, Normalize
 from matplotlib.cm import ScalarMappable
-from matplotlib.gridspec import GridSpec
-from scipy.stats import gaussian_kde
 
-# Publication-quality settings
+# user can modify these values to select which solutions to plot 
+# and where to store the output figure
+sol_num = 29
+action_mode = 'base'  # change to 'IU' for IU social planner solution
+util_to_plot = 'watertown'  # change to 'dryville' or 'fallsland' for other utilities
+compsol_type = 'SP base'
+output_figure_filepath = f'figures/pathways_boxplot_likelihood_freq_s{sol_num}_{util_to_plot[0]}.pdf'
+
+# set up plotting parameters
+num_sol_dict = {'base': 46, 'IU': 628}
+color_dict_coop = {'SP base': "#39563D", 'SP IU': "#B66D0D"}
+color_selected = color_dict_coop[compsol_type]
+
+num_reals = 200
+num_perturbations = 500 
+
+infra_names = {
+    'watertown': ['New River\nReservoir', 'College Rock\nExp. Low',
+                    'College Rock\nExp. High', 'Water\nReuse', 'Water\nReuse II'],
+    'dryville': ['Sugar Creek\nReservoir', 'Water\nReuse'],
+    'fallsland': ['New River\nReservoir', 'Water\nReuse']
+}
+
+# take mode, solution number, and utility as arguments
+figsize_dict = {'watertown': (4, 4), 'dryville': (4, 2), 'fallsland': (4, 2)}
+figsize = figsize_dict[util_to_plot]
+color = color_dict_coop[compsol_type]
+
+original_file = f'../../results/IU Reevaluation/Pathways_s{sol_num}_original.out'
+
+# check if the file exists
+try: 
+    with open(original_file, 'r') as f:
+        pass
+except FileNotFoundError:
+    print(f"Error: The file {original_file} does not exist.")
+    sys.exit(1)
+
+perturbed_dir = f'../../results/IU Reevalaution/perturbed_pathways_{action_mode}/pathways_ptb_s{sol_num}'
+# check if the directory exists
+if os.path.isdir(perturbed_dir):
+    pass
+else:
+    print(f"Error: The directory {perturbed_dir} does not exist.")
+
 plt.rcParams.update({
     'font.size': 10,
     'font.family': 'sans-serif',
@@ -40,9 +64,8 @@ plt.rcParams.update({
     'savefig.bbox': 'tight'
 })
 
-
 def load_pathway_data(filepath, num_reals=200):
-    """Load pathway data from file."""
+    # Load pathway data
     try:
         df = pd.read_csv(filepath, sep='\t')
         return df
@@ -50,9 +73,8 @@ def load_pathway_data(filepath, num_reals=200):
         print(f'Error reading {filepath}: {e}')
         return None
 
-
 def extract_timing_by_utility(pathways_df, utility_name, num_reals=200):
-    """Extract infrastructure timing for a specific utility."""
+    # Extract infrastructure timing for a specific utility.
     cluster_input = np.ones([num_reals, 13]) * 2344
     
     for real in range(num_reals):
@@ -73,23 +95,9 @@ def extract_timing_by_utility(pathways_df, utility_name, num_reals=200):
     else:
         return cluster_input[:, [0, 7]]
 
-
 def calculate_construction_frequency(pathway_data, max_time=2344):
-    """
-    Calculate percentage of realizations that build each infrastructure.
-    
-    Parameters
-    ----------
-    pathway_data : np.ndarray
-        Shape (num_reals, num_infrastructure)
-    max_time : float
-        Maximum time value (never built if >= this)
-        
-    Returns
-    -------
-    frequencies : np.ndarray
-        Shape (num_infrastructure,) with percentage (0-100) built
-    """
+    # Calculate percentage of realizations that build each infrastructure.
+
     n_reals, n_infra = pathway_data.shape
     frequencies = np.zeros(n_infra)
     
@@ -100,6 +108,29 @@ def calculate_construction_frequency(pathway_data, max_time=2344):
     
     return frequencies
 
+def calculate_frequency_changes(original_data, perturbed_data_list, max_time=2344):
+    # Calculate how construction frequency changes across perturbations.
+    
+    n_infrastructure = original_data.shape[1]
+    n_perturbations = len(perturbed_data_list)
+    
+    # Original construction frequencies
+    original_freq = calculate_construction_frequency(original_data, max_time)
+    
+    # Calculate frequency for each perturbation
+    all_changes = np.zeros((n_perturbations, n_infrastructure))
+    
+    for p_idx, pert_data in enumerate(perturbed_data_list):
+        pert_freq = calculate_construction_frequency(pert_data, max_time)
+        # Calculate signed change (positive = more frequent, negative = less frequent)
+        all_changes[p_idx, :] = pert_freq - original_freq
+    
+    # Calculate statistics
+    max_increase = np.max(all_changes, axis=0)
+    max_decrease = np.min(all_changes, axis=0)
+    mean_change = np.mean(all_changes, axis=0)
+    
+    return max_increase, max_decrease, mean_change, all_changes, original_freq
 
 def calculate_frequency_changes(original_data, perturbed_data_list, max_time=2344):
     """
@@ -137,7 +168,6 @@ def calculate_frequency_changes(original_data, perturbed_data_list, max_time=234
     
     return max_increase, max_decrease, mean_change, all_changes, original_freq
 
-
 def create_frequency_colored_boxplot(original_data, perturbed_data_list,
                                      infra_names,
                                      figsize=(12, 9),
@@ -146,43 +176,8 @@ def create_frequency_colored_boxplot(original_data, perturbed_data_list,
                                      show_quartiles=False,
                                      show_original=True,
                                      bar_color='black',
-                                     colormap='viridis',
                                      save_path=None):
-    """
-    Create box plot with colors based on construction frequency change.
-    
-    Color of the box shows how much MORE frequently infrastructure gets built
-    under perturbations compared to original pathway.
-    
-    Data is in weekly timesteps but displayed with years on x-axis.
-    X-axis range is fixed to 20-50 years.
-    
-    Parameters
-    ----------
-    original_data : np.ndarray
-        Original pathway data (num_reals, num_infrastructure) in weeks
-    perturbed_data_list : list of np.ndarray
-        List of perturbed pathway data arrays in weeks
-    infra_names : list
-        Infrastructure option names
-    figsize : tuple
-        Figure dimensions
-    overlap : float
-        Not used for boxplots but kept for API compatibility (or used for spacing?)
-    fill_alpha : float
-        Transparency of filled areas
-    show_quartiles : bool
-        Not used for boxplots (implicit)
-    show_original : bool
-        Show original pathway median
-    bar_color : str
-        Color for the median-of-medians marker
-    colormap : str
-        Colormap name ('viridis', 'plasma', 'inferno', 'magma')
-    save_path : str, optional
-        Path to save figure
-    """
-    
+    # Create box plot with colors based on construction frequency change.  
     n_infrastructure = original_data.shape[1]
     n_perturbations = len(perturbed_data_list)
     
@@ -191,6 +186,7 @@ def create_frequency_colored_boxplot(original_data, perturbed_data_list,
     print(f"{'='*70}")
     
     # Data is in weeks, will be displayed in years on x-axis
+    # Time range is fixed to 20-50 years.
     original_scaled = original_data.copy()
     perturbed_scaled = perturbed_data_list
     max_time = 2344  # Maximum time in weeks
@@ -199,12 +195,6 @@ def create_frequency_colored_boxplot(original_data, perturbed_data_list,
     # Calculate frequency changes (always use original week-based data)
     max_increase, max_decrease, mean_change, all_changes, original_freq = \
         calculate_frequency_changes(original_data, perturbed_data_list, max_time=2344)
-    
-    print(f"\nConstruction Frequency Analysis:")
-    print(f"{'Infrastructure':<30} {'Original %':>12} {'Mean Change':>12} {'Max Inc':>10} {'Max Dec':>10}")
-    print(f"{'-'*70}")
-    for i, name in enumerate(infra_names):
-        print(f"{name:<30} {original_freq[i]:>11.1f}% {mean_change[i]:>11.1f}% {max_increase[i]:>9.1f}% {max_decrease[i]:>9.1f}%")
     
     # Collect median timing values across perturbations (not all individual values)
     all_perturbation_medians = []
@@ -246,10 +236,7 @@ def create_frequency_colored_boxplot(original_data, perturbed_data_list,
     # Set up diverging colormap centered at 0 to show direction of change
     # Blue = decreased frequency, Red = increased frequency
     max_abs_change = max(abs(np.min(max_decrease)), abs(np.max(max_increase)), 10)
-    #vmin = -max_abs_change
-    #vmax = max_abs_change
     norm = Normalize(vmin=-25, vmax=25)
-    cmap = plt.cm.get_cmap(colormap)
     
     # Create figure with two subplots (main boxplot + frequency bar plot)
     from matplotlib.gridspec import GridSpec
@@ -273,7 +260,6 @@ def create_frequency_colored_boxplot(original_data, perturbed_data_list,
             freq_change = max_increase[i]
         else:
             freq_change = max_decrease[i]
-        color = cmap(norm(freq_change))
         
         # Get median timing values for this infrastructure across all perturbations
         perturbation_medians = all_perturbation_medians[i]
@@ -297,7 +283,7 @@ def create_frequency_colored_boxplot(original_data, perturbed_data_list,
             
             # Style the box
             for patch in bp['boxes']:
-                patch.set_facecolor(color)
+                patch.set_facecolor(bar_color)
                 patch.set_alpha(fill_alpha)
                 patch.set_edgecolor('black')
             
@@ -352,9 +338,9 @@ def create_frequency_colored_boxplot(original_data, perturbed_data_list,
     
     # Horizontal bar plot for median perturbed frequencies
     # make the bars thinner
-    bars = ax_bar.barh(y_pos, perturbed_freq_median, height=0.5,
-                       color=bar_color, alpha=0.85, edgecolor='black', 
-                       linewidth=1.0, label='Med. across perturbations')
+    ax_bar.barh(y_pos, perturbed_freq_median, height=0.5,
+                    color=bar_color, alpha=0.85, edgecolor='black', 
+                    linewidth=1.0, label='Med. across perturbations')
 
     # scatter plot for median perturbed frequencies
     ax_bar.scatter(original_freq_count, y_pos, color='white', s=60, 
@@ -378,121 +364,51 @@ def create_frequency_colored_boxplot(original_data, perturbed_data_list,
     ax.invert_yaxis()
     ax_bar.invert_yaxis()
     
-    # Share y-axis limits with main plot
-    # ax_bar.set_ylim(ax.get_ylim()) # This copies the inverted limits (high, low) so it maintains inversion.
-
     # Title
     title = (f'Infrastructure timing & construction frequency \n'
-            f'achanges across {n_perturbations} perturbations')
+            f'achanges across 500 perturbations')
     ax.set_title(title, fontsize=9, pad=35)
     
     # Create colorbar axis at the bottom of the figure
     cax = plt.axes([0.1, -0.05, 0.8, 0.05])
-    
-    # Add colorbar
-    sm = ScalarMappable(cmap=cmap, norm=norm)
-    sm.set_array([])
-    cbar = plt.colorbar(sm, cax=cax, orientation='horizontal',
-                        label='Max Change in Construction Frequency (%)')
-    cbar.ax.tick_params(labelsize=6)
-    '''
-    # Add legend for other elements
-    from matplotlib.lines import Line2D
-    legend_elements = [
-        Line2D([0], [0], color='black', linewidth=2.5, linestyle='--', label='Original median'),
-        Line2D([0], [0], color='black', linewidth=2, linestyle='--', 
-               label='Q25/Q75 of perturbed medians')
-    ]
-
-    ax.legend(handles=legend_elements, loc='upper center', 
-             bbox_to_anchor=(0.5, -0.2), frameon=False, fontsize=8, ncol=2)
-    '''
-    #plt.tight_layout()
-    
+        
     if save_path:
         plt.savefig(save_path,)
-        print(f"\nFrequency-colored boxplot saved to: {save_path}")
+    print(f"\nFrequency-colored boxplot saved to: {save_path}")
     
     return fig, ax
 
+# Load data
+print(f"\nLoading original: {original_file}")
+original_df = load_pathway_data(original_file)
+original_data = extract_timing_by_utility(original_df, util_to_plot, num_reals)
+infra_names = infra_names[util_to_plot]
 
-# =============================================================================
-# MAIN EXECUTION
-# =============================================================================
+print(f"Loading {num_perturbations} perturbations...")
+perturbed_data_list = []
+for i in range(num_perturbations):
+    pert_path = f'Pathways_s{i}.out'
+    pert_df = load_pathway_data(pert_path)
+    if pert_df is not None:
+        pert_data = extract_timing_by_utility(pert_df, util_to_plot, num_reals)
+        perturbed_data_list.append(pert_data)
 
-if __name__ == "__main__":
-    print("=" * 70)
-    print("Frequency-Colored Ridgeline Plot")
-    print("=" * 70)
-    print("\nThis plot shows:")
-    print("1. Distribution of median timing across perturbations (ridges)")
-    print("2. How construction frequency changes (color intensity)")
-    print("=" * 70)
-    
-    # Configuration
+print(f"Successfully loaded {len(perturbed_data_list)} perturbations")
 
-    # take mode, solution number, and utility as arguments
-    MODE = sys.argv[1]
-    SOL_NUM = sys.argv[2]
-    UTILITY = sys.argv[3]
-    FIGSIZE_DICT = {'watertown': (4, 4), 'dryville': (4, 2), 'fallsland': (4, 2)}
-    FIGSIZE = FIGSIZE_DICT[UTILITY]
-    #COLOR_DICT = {'401': '#B66D0D', '363': '#FBB13C', '29': '#39563D'}
-    COLOR_DICT = {'552': '#B66D0D', '154': '#FBB13C', '29': '#39563D'}
-    COLOR = COLOR_DICT[SOL_NUM]
-    ORIGINAL_FILE = f'perturbed_pathways_{MODE}/Pathways_s{SOL_NUM}_original.out'
-    PERTURBED_DIR = f'perturbed_pathways_{MODE}/pathways_ptb_s{SOL_NUM}'
-    OUTPUT_DIR = 'figures/test_figs'
-    CMAP_SELECTED = 'BrBG'  # Diverging: Brown-Blue (Brown = more frequent, Blue = less frequent)
-    NUM_REALS = 200
-    NUM_PERTURBATIONS = 500
+# plot only if there are infrastructure that was built
+if len(perturbed_data_list) > 0:
+    # Create frequency-colored ridgeline (weeks data, years axis labels)
+    print("\n" + "="*70)
+    print("Creating frequency-colored ridgeline...")
+    print("="*70)
+    fig, ax = create_frequency_colored_boxplot(
+        original_data, perturbed_data_list, infra_names,
+        bar_color=color_selected,
+        overlap=0.3,
+        figsize=figsize,
+        save_path=output_figure_filepath
+    )
     
-    INFRA_NAMES = {
-        'watertown': ['New River\nReservoir', 'College Rock\nExp. Low',
-                     'College Rock\nExp. High', 'Water\nReuse', 'Water\nReuse II'],
-        'dryville': ['Sugar Creek\nReservoir', 'Water\nReuse'],
-        'fallsland': ['New River\nReservoir', 'Water\nReuse']
-    }
-    
-    # Load data
-    print(f"\nLoading original: {ORIGINAL_FILE}")
-    original_df = load_pathway_data(ORIGINAL_FILE)
-    original_data = extract_timing_by_utility(original_df, UTILITY, NUM_REALS)
-    infra_names = INFRA_NAMES[UTILITY]
-    
-    print(f"Loading {NUM_PERTURBATIONS} perturbations...")
-    perturbed_data_list = []
-    for i in range(NUM_PERTURBATIONS):
-        pert_path = f'{PERTURBED_DIR}/Pathways_s{i}.out'
-        pert_df = load_pathway_data(pert_path)
-        if pert_df is not None:
-            pert_data = extract_timing_by_utility(pert_df, UTILITY, NUM_REALS)
-            perturbed_data_list.append(pert_data)
-    
-    print(f"Successfully loaded {len(perturbed_data_list)} perturbations")
-    
-    if len(perturbed_data_list) > 0:
-        # Create frequency-colored ridgeline (weeks data, years axis labels)
-        print("\n" + "="*70)
-        print("Creating frequency-colored ridgeline...")
-        print("="*70)
-        fig, ax = create_frequency_colored_boxplot(
-            original_data, perturbed_data_list, infra_names,
-            bar_color=COLOR,
-            overlap=0.3,
-            figsize=FIGSIZE,
-            colormap=CMAP_SELECTED,
-            save_path=f'{OUTPUT_DIR}/pathways_boxplot_likelihood_freq_s{SOL_NUM}_{UTILITY[0]}.pdf'
-        )
-        
-        print("\n" + "="*70)
-        print("COMPLETE!")
-        print("="*70)
-        print("\nCreated frequency-colored boxplot:")
-        print("  - pathways_boxplot_likelihood_freq_s{SOL_NUM}_{UTILITY[0]}.pdf")
-        print("\nColor interpretation:")
-        print("  Darker = Infrastructure built in MORE realizations under perturbations")
-        print("  Lighter = Construction frequency similar to original")
-        print("="*70)
-        
-        plt.show()
+    print("COMPLETE!")
+    print(f"Figure saved in {output_figure_filepath}")
+

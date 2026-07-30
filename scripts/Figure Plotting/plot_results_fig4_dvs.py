@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 import seaborn as sns
 import statsmodels.api as sm
-from helper_functions_objs import *
+from ..helper_functions_objs import *
 
 # to be changed by the user
 output_figure_filename = 'figures/dvs_IU_base_hist_triggersnd.pdf'
