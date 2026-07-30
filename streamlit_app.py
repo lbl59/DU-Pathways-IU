@@ -15,7 +15,7 @@ GALLERY_COLUMNS = 3
 
 
 def _label_from_filename(path: Path) -> str:
-    """Turn '1_Figure_1_Explorer.py' into 'Figure 1 Explorer'."""
+    """Turn '1_Figure_1_Explorer.py' into 'Figure 1 Performance Objectives'."""
     stem = re.sub(r"^\d+_?", "", path.stem)  # drop Streamlit's leading order number
     return stem.replace("_", " ").strip()
 
@@ -54,7 +54,7 @@ def render_home() -> None:
     )
 
     st.markdown("---")
-    st.subheader("Available figure explorers")
+    st.subheader("Explore the figures below")
 
     pages = _discover_pages()
 
