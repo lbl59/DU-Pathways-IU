@@ -1,55 +1,7 @@
 from __future__ import annotations
 
-import base64
-from pathlib import Path
+from hotspot_explorer import render_hotspot_explorer
 
-import plotly.graph_objects as go
-import streamlit as st
-from PIL import Image
-
-st.set_page_config(page_title="Figure 1 - Performance Tradeoffs", layout="wide")
-
-# ---------------------------------------------------------------------------
-# Locate the figure. This page lives in <repo_root>/pages/, the image lives
-# in <repo_root>/figures/, so we resolve the path relative to this file
-# rather than relying on the process's current working directory.
-# ---------------------------------------------------------------------------
-REPO_ROOT = Path(__file__).resolve().parent.parent
-IMAGE_PATH = REPO_ROOT / "figures" / "results_fig1_objs.jpg"
-
-st.title("Figure 1: Regional Performance Tradeoffs — Interactive Explorer")
-st.write(
-    "This figure compares candidate water-supply pathway strategies found by two "
-    "search approaches: **Baseline DU Optimization** (searches using only the "
-    "*expected* future) and **IU-DU Optimization** (searches that also account for "
-    "deep uncertainty, i.e. the *worst 10th-percentile* of simulated futures). "
-    "Click a numbered marker on the figure — or pick a callout from the list below "
-    "it — to see what that part of the plot is showing."
-)
-
-if not IMAGE_PATH.exists():
-    st.error(f"Could not find the figure at {IMAGE_PATH}. Has the file moved?")
-    st.stop()
-
-
-@st.cache_data(show_spinner=False)
-def _load_image_as_data_uri(path: Path) -> tuple[str, int, int]:
-    img = Image.open(path).convert("RGB")
-    width, height = img.size
-    from io import BytesIO
-
-    buf = BytesIO()
-    img.save(buf, format="JPEG", quality=90)
-    b64 = base64.b64encode(buf.getvalue()).decode("ascii")
-    return f"data:image/jpeg;base64,{b64}", width, height
-
-
-IMG_URI, IMG_W, IMG_H = _load_image_as_data_uri(IMAGE_PATH)
-
-# ---------------------------------------------------------------------------
-# Hotspot library. Coordinates are in source-image pixel space (origin at the
-# top-left corner, same convention as PIL), measured directly off the JPEG.
-# ---------------------------------------------------------------------------
 HOTSPOTS = [
     dict(
         id="overview",
@@ -242,111 +194,28 @@ HOTSPOTS = [
     ),
 ]
 
-ID_TO_HOTSPOT = {h["id"]: h for h in HOTSPOTS}
-
-# ---------------------------------------------------------------------------
-# Build the interactive figure: static image + clickable hotspot markers.
-# ---------------------------------------------------------------------------
-fig = go.Figure()
-
-fig.add_layout_image(
-    dict(
-        source=IMG_URI,
-        xref="x",
-        yref="y",
-        x=0,
-        y=0,
-        sizex=IMG_W,
-        sizey=IMG_H,
-        sizing="stretch",
-        layer="below",
-    )
-)
-
-fig.add_trace(
-    go.Scatter(
-        x=[h["x"] for h in HOTSPOTS],
-        y=[h["y"] for h in HOTSPOTS],
-        mode="markers+text",
-        text=[str(i + 1) for i in range(len(HOTSPOTS))],
-        textfont=dict(color="white", size=12, family="Arial Black"),
-        marker=dict(
-            size=26,
-            color="#8B0000",
-            opacity=0.85,
-            line=dict(color="white", width=2),
-        ),
-        customdata=[h["id"] for h in HOTSPOTS],
-        hovertext=[f"{h['panel']}: {h['title']}" for h in HOTSPOTS],
-        hoverinfo="text",
-        name="callouts",
-    )
-)
-
-fig.update_xaxes(visible=False, range=[0, IMG_W])
-fig.update_yaxes(visible=False, range=[IMG_H, 0], scaleanchor="x")
-fig.update_layout(
-    margin=dict(l=0, r=0, t=0, b=0),
-    height=760,
-    plot_bgcolor="white",
-    dragmode="pan",
-)
-
-ids_in_order = [h["id"] for h in HOTSPOTS]
-labels = [f"{i + 1}. [{h['panel']}] {h['title']}" for i, h in enumerate(HOTSPOTS)]
-id_to_label = dict(zip(ids_in_order, labels))
-label_to_id = dict(zip(labels, ids_in_order))
-
-# The radio widget below owns the "current selection" state directly (via its
-# key), so there's a single source of truth. We only ever *write* to that key
-# before the widget is instantiated (e.g. from a plotly click), never after.
-if "fig1_radio_choice" not in st.session_state:
-    st.session_state.fig1_radio_choice = id_to_label["overview"]
-
-col_fig, col_callout = st.columns([2.2, 1], gap="large")
-
-with col_fig:
-    event = st.plotly_chart(
-        fig,
-        width="stretch",
-        on_select="rerun",
-        selection_mode=("points",),
-        key="fig1_plot",
-        config={"scrollZoom": True, "displayModeBar": True},
-    )
-
-    # A click on a marker updates the selected callout. Plotly reports
-    # customdata per-point as a list (e.g. ["panel_b_ideal"]), so unwrap it.
-    if event and event.get("selection", {}).get("points"):
-        clicked = event["selection"]["points"][0]
-        clicked_customdata = clicked.get("customdata")
-        clicked_id = clicked_customdata[0] if clicked_customdata else None
-        if clicked_id in id_to_label:
-            st.session_state.fig1_radio_choice = id_to_label[clicked_id]
-
-with col_callout:
-    st.subheader("Callouts")
-    picked_label = st.radio(
-        "Or pick a callout directly:",
-        options=labels,
-        key="fig1_radio_choice",
-        label_visibility="collapsed",
-    )
-    hotspot = ID_TO_HOTSPOT[label_to_id[picked_label]]
-    st.markdown("---")
-    st.markdown(f"### {hotspot['title']}")
-    st.caption(hotspot["panel"])
-    st.write(hotspot["text"])
-
-st.markdown("---")
-with st.expander("About this page"):
-    st.write(
+render_hotspot_explorer(
+    page_title="Figure 1 - Performance Tradeoffs",
+    page_heading="Figure 1: Regional Performance Tradeoffs — Interactive Explorer",
+    intro=(
+        "This figure compares candidate water-supply pathway strategies found by two "
+        "search approaches: **Baseline DU Optimization** (searches using only the "
+        "*expected* future) and **IU-DU Optimization** (searches that also account for "
+        "deep uncertainty, i.e. the *worst 10th-percentile* of simulated futures). "
+        "Click a numbered marker on the figure — or pick a callout from the list below "
+        "it — to see what that part of the plot is showing."
+    ),
+    image_relpath="figures/results_fig1_objs.jpg",
+    hotspots=HOTSPOTS,
+    state_key="fig1",
+    about_text=(
         "This explorer overlays clickable hotspots on the published static "
-        "figure (`figures/results_figure_1.jpg`) rather than re-simulating the "
+        "figure (`figures/results_fig1_objs.jpg`) rather than re-simulating the "
         "underlying data, since the per-solution objective values used to "
         "generate the figure are not tracked in this repository (only decision "
         "variables and downstream robustness/perturbation results are). "
         "The callout text is grounded directly in what the plotting code in "
         "`scripts/Figure Plotting/` (especially `parallel_plot_functions.py` "
         "and the 3D scatter logic in `explore_objs.ipynb`) computes and labels."
-    )
+    ),
+)
