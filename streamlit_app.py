@@ -45,6 +45,15 @@ def _discover_pages() -> list[tuple[Path, str]]:
     return [(p, _label_from_filename(p)) for p in page_files]
 
 
+def _url_path_for(label: str) -> str:
+    """Turn 'Figure 1 Performance Objectives' into 'Figure_1_Performance_Objectives'.
+
+    Used as an explicit, predictable ``url_path`` for each ``st.Page`` so the
+    gallery thumbnails below can link straight to it.
+    """
+    return label.replace(" ", "_")
+
+
 def render_home() -> None:
     st.title("DU Pathways IU — Interactive Results Explorer")
     st.write(
@@ -55,6 +64,7 @@ def render_home() -> None:
 
     st.markdown("---")
     st.subheader("Explore the figures below")
+    st.caption("Click a thumbnail to open its interactive explorer.")
 
     pages = _discover_pages()
 
@@ -68,14 +78,14 @@ def render_home() -> None:
                 with col:
                     with st.container(border=True):
                         thumbnail = _thumbnail_for(page_path)
+                        url_path = _url_path_for(label)
                         if thumbnail is not None:
-                            st.image(str(thumbnail), width="stretch")
+                            st.image(str(thumbnail), width="stretch", link=url_path)
                         else:
                             st.info("No preview image found.")
-                        st.markdown(f"**{label}**")
                         st.page_link(
                             f"pages/{page_path.name}",
-                            label="Open explorer",
+                            label=label,
                             icon="📊",
                         )
 
@@ -101,7 +111,12 @@ def render_home() -> None:
 # ---------------------------------------------------------------------------
 home_page = st.Page(render_home, title="Home Page", icon="🏠", default=True)
 figure_pages = [
-    st.Page(str(page_path), title=label, icon="📊")
+    st.Page(
+        str(page_path),
+        title=label,
+        icon="📊",
+        url_path=_url_path_for(label),
+    )
     for page_path, label in _discover_pages()
 ]
 
