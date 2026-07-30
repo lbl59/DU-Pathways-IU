@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 import streamlit as st
 from PIL import Image
 
-st.set_page_config(page_title="Figure 1 Explorer", layout="wide")
+st.set_page_config(page_title="Figure 1 - Performance Tradeoffs", layout="wide")
 
 # ---------------------------------------------------------------------------
 # Locate the figure. This page lives in <repo_root>/pages/, the image lives
@@ -15,7 +15,7 @@ st.set_page_config(page_title="Figure 1 Explorer", layout="wide")
 # rather than relying on the process's current working directory.
 # ---------------------------------------------------------------------------
 REPO_ROOT = Path(__file__).resolve().parent.parent
-IMAGE_PATH = REPO_ROOT / "figures" / "results_figure_1.jpg"
+IMAGE_PATH = REPO_ROOT / "figures" / "results_fig1_objs.jpg"
 
 st.title("Figure 1: Regional Performance Tradeoffs — Interactive Explorer")
 st.write(

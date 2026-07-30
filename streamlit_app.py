@@ -1,70 +1,58 @@
 from __future__ import annotations
 
-import csv
+import re
 from pathlib import Path
 
 import streamlit as st
 
+st.set_page_config(page_title="DU Pathways IU Interactive Repo", layout="wide")
 
-def _load_csv_rows(raw_text: str) -> list[dict[str, str]]:
-    reader = csv.DictReader(raw_text.splitlines())
-    return [row for row in reader if row]
-
-
-def _to_float(value: str) -> float | None:
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return None
+REPO_ROOT = Path(__file__).resolve().parent
+PAGES_DIR = REPO_ROOT / "pages"
 
 
-st.set_page_config(page_title="DU Pathways Interactive Results", layout="wide")
-st.title("DU Pathways Interactive Results")
-st.write("Upload a CSV of model results and interactively filter numeric columns.")
+def _label_from_filename(path: Path) -> str:
+    """Turn '1_Figure_1_Explorer.py' into 'Figure 1 Explorer'."""
+    stem = re.sub(r"^\d+_?", "", path.stem)  # drop Streamlit's leading order number
+    return stem.replace("_", " ").strip()
 
-uploaded_file = st.file_uploader("Upload results CSV", type=["csv"])
-rows: list[dict[str, str]] = []
 
-if uploaded_file is not None:
-    rows = _load_csv_rows(uploaded_file.getvalue().decode("utf-8"))
-else:
-    default_csv = Path("results.csv")
-    if default_csv.exists():
-        rows = _load_csv_rows(default_csv.read_text(encoding="utf-8"))
+def _discover_pages() -> list[tuple[Path, str]]:
+    if not PAGES_DIR.exists():
+        return []
+    page_files = sorted(
+        (p for p in PAGES_DIR.glob("*.py") if not p.name.startswith("_")),
+        key=lambda p: p.name,
+    )
+    return [(p, _label_from_filename(p)) for p in page_files]
 
-if not rows:
-    st.info("No data loaded yet. Upload a CSV file to begin.")
-    st.stop()
 
-numeric_columns = [
-    column
-    for column in rows[0]
-    if any(_to_float(row.get(column, "")) is not None for row in rows)
-]
-
-if not numeric_columns:
-    st.write(rows)
-    st.stop()
-
-selected_column = st.selectbox("Numeric column to filter", options=numeric_columns)
-numeric_values = [
-    _to_float(row.get(selected_column, ""))
-    for row in rows
-    if _to_float(row.get(selected_column, "")) is not None
-]
-
-threshold = st.slider(
-    "Minimum value",
-    min_value=float(min(numeric_values)),
-    max_value=float(max(numeric_values)),
-    value=float(min(numeric_values)),
+st.title("DU Pathways IU — Interactive Results Explorer")
+st.write(
+    "This app hosts interactive, clickable versions of the figures from the "
+    "accompanying paper. Use the sidebar, or the links below, to open a "
+    "figure explorer."
 )
 
-filtered_rows = [
-    row
-    for row in rows
-    if (_to_float(row.get(selected_column, "")) or float("-inf")) >= threshold
-]
+st.markdown("---")
+st.subheader("Available figure explorers")
 
-st.metric("Rows after filter", len(filtered_rows))
-st.dataframe(filtered_rows, use_container_width=True)
+pages = _discover_pages()
+
+if not pages:
+    st.info("No figure explorer pages found yet in `pages/`.")
+else:
+    for page_path, label in pages:
+        st.page_link(f"pages/{page_path.name}", label=label, icon="📊")
+
+st.markdown("---")
+with st.expander("About this repository"):
+    st.write(
+        "This is the interactive companion site for the paper's metarepo. "
+        "Static figures live in `figures/`, the plotting scripts that "
+        "produced them live in `scripts/Figure Plotting/`, and each "
+        "interactive explorer lives as its own page under `pages/`. New "
+        "figures can be added by dropping a new `N_Figure_Name.py` file into "
+        "`pages/` — it will automatically appear both in Streamlit's sidebar "
+        "navigation and in the list above."
+    )
