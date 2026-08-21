@@ -15,6 +15,7 @@ Lillian Lau<sup>1\*</sup>, Patrick M. Reed<sup>1</sup>,  and David F. Gold<sup>2
 - [Journal Reference](#pencil2-journal-reference)
 - [Data and Code Reference](#1234-data-and-code-reference)
 - [Contributing Software](#computer-contributing-software)
+- [Explore our Interactive Repo](#microscope-explore-our-interactive-repo)
 - [Reproduce my experiment](#file_folder-reproduce-my-experiment)
 - [Reproduce my figures](#bar_chart-reproduce-my-figures)
 
@@ -59,6 +60,11 @@ To cite this repository, use the citation below:
 
 [Back to contents](#mailbox-contents)
 
+## :microscope: Explore our Interactive Repo
+Explore our interactive Streamlit repository here [INSERT LINK HERE] to view and interact with our code, data, and figures! 
+
+[Back to contents](#mailbox-contents)
+
 ## :file_folder: Reproduce my experiment
 Clone this repository to get access to code scripts used to generate risk of failure (ROF) tables, run the IU Optimization and Baseline Optimization experiments, as well as conduct both IU Re-Evaluation and DU Re-Evaluation. This repository also provides the Python code scripts for reproducing the figures. 
 
@@ -67,12 +73,12 @@ Navigate into each folder (listed below) to refer to their detailed README files
 ### What each folder contains 
 1. [`src`](src/): Contains the source code of the latest version of [WaterPaths](https://github.com/bernardoct/WaterPaths) used in this study.
 2. [scripts`](scripts/): Contains all the code required to perform the optimization, re-evaluation, and figure generation of this study. Each subfolder is numbered in order of which it should be completed.
-    1. [`scripts/0-Synthetic Streamflow Generation`](scripts/Synthetic%20Streamflow%20Generation/): Contains all the code required to generate synthetic traces of inflow, evaporation, and demand from historical data.
-    2. [`scripts/1-ROF Table Generation`](scripts/ROF%20Table%20Generation/): Contains all the code required to generate the Risk of Failure (ROF) tables needed to run the subsequent experiements. 
-    3. [`scripts/2-DU Optimization`](scripts/DU%20Optimization/): Contains all code and guidelines required to perform two versions of the DU Optimization experiment. Two types of DU Optimization experiments were conducted for this study: the Baseline Optimization experiment (no implementation uncertainty), and the IU Optimization (with implementation uncertainty).
-    4. [`scripts/3-DU Reevaluation`](scripts/DU%20Reevaluation/): Contains the code required to perform DU Re-Evaluation for calculating the robustness of each pathway strategy discovered in the DU Optimization step.
-    5. [`scripts/4-DU Reevaluation`](scripts/IU%20Reevaluation/): Contains the code required to perform IU Re-Evaluation for quantifying performance degradation of each pathway strategy when exposed to implementation uncertainty.
-    6. [`scripts/5-Figure Plotting`](scripts/Figure%20Plotting/): Contains the code required to generate most of the figures found in `figures`.
+    1. [`scripts/0-Synthetic Streamflow Generation`](scripts/0-Synthetic%20Streamflow%20Generation/): Contains all the code required to generate synthetic traces of inflow, evaporation, and demand from historical data.
+    2. [`scripts/1-ROF Table Generation`](scripts/1-ROF%20Table%20Generation/): Contains all the code required to generate the Risk of Failure (ROF) tables needed to run the subsequent experiements. 
+    3. [`scripts/2-DU Optimization`](scripts/2-DU%20Optimization/): Contains all code and guidelines required to perform two versions of the DU Optimization experiment. Two types of DU Optimization experiments were conducted for this study: the Baseline Optimization experiment (no implementation uncertainty), and the IU Optimization (with implementation uncertainty).
+    4. [`scripts/3-DU Reevaluation`](scripts/3-DU%20Reevaluation/): Contains the code required to perform DU Re-Evaluation for calculating the robustness of each pathway strategy discovered in the DU Optimization step.
+    5. [`scripts/4-DU Reevaluation`](scripts/4-IU%20Reevaluation/): Contains the code required to perform IU Re-Evaluation for quantifying performance degradation of each pathway strategy when exposed to implementation uncertainty.
+    6. [`scripts/5-Figure Plotting`](scripts/5-Figure%20Plotting/): Contains the code required to generate most of the figures found in `figures`.
 3. [`figures`](figures/): Contains all the figures that can be found in the paper.
 
 ### Prerequisites
@@ -84,6 +90,8 @@ Navigate into each folder (listed below) to refer to their detailed README files
 
 ## :bar_chart: Reproduce my figures
 Use the files found in the `figures` directory to reproduce the figures used in this publication. Follow the guidelines detailed in the README file of the [`scripts/Figure Plotting`](scripts/Figure%20Plotting/) directory.
+
+:microscope: You can also explore the figures interactively on [our Streamlit platform here].
 
 **Note**: Please complete all the steps listed in the `scripts` folder prior to reproducing the figures.
 
