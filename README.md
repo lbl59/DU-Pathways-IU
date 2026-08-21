@@ -56,6 +56,7 @@ To cite this repository, use the citation below:
 |-------|---------|-----------------|-----|
 | Apache Arrow | v25.0.1 | https://github.com/apache/arrow | NA | 
 | HDF5 for Python | v3.12.1 | https://github.com/h5py/h5py | NA |
+| MOEAFramework | v5.1 | https://github.com/MOEAFramework/MOEAFramework | NA | 
 | SALib | v1.5.2 | https://github.com/salib/salib | 10.18174/sesmo.18155 | 
 | Seaborn | v0.13.2 | https://github.com/mwaskom/seaborn | 10.21105/joss.03021 |
 | WaterPaths | v1.0 | https://github.com/bernardoct/WaterPaths | 10.1016/j.envsoft.2020.104772 |
@@ -68,7 +69,9 @@ Explore our interactive Streamlit repository here [INSERT LINK HERE] to view and
 [Back to contents](#mailbox-contents)
 
 ## :file_folder: Reproduce my experiment
-Clone this repository to get access to code scripts used to generate risk of failure (ROF) tables, run the IU Optimization and Baseline Optimization experiments, as well as conduct both IU Re-Evaluation and DU Re-Evaluation. This repository also provides the Python code scripts for reproducing the figures. 
+Clone this repository to get access to code scripts used to generate risk of failure (ROF) tables and generate the synthetic hydrologic traces, run the IU Optimization and Baseline Optimization experiments, as well as conduct both IU Re-Evaluation and DU Re-Evaluation. This repository also provides the Python code scripts for reproducing the figures. 
+
+_:memo: NOTE: This repository only contains the scripts to run the experiment. For the actual CSV, Parquet, and HDF5 files used as input into the different steps, please see this paper's corresponding MSDLive data repository here [INSERT LINK HERE]._
 
 Navigate into each folder (listed below) to refer to their detailed README files that provide step-by-step guidelines on how to navigate and execute their respective scripts.
 
