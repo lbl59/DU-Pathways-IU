@@ -1,0 +1,4 @@
+inflow_amp  0.0  0.01
+inflow_freq  4172.3 4589.89
+inflow_phase  417 459 
+evap_rate  0.8 1.2
