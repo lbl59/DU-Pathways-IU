@@ -1,5 +1,0 @@
-demand 0.5 2.0
-bond_interest  1.0 1.2
-bond_term  0.6 1.0 
-discount_rate  0.6 1.4 
-volumetric_price 1.0 1.0

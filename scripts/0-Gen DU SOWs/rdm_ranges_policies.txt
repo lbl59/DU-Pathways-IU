@@ -1,3 +1,0 @@
-restr_eff_w  0.9 1.1
-restr_eff_d  0.9 1.1
-restr_eff_f  0.9 1.1
