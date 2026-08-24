@@ -78,13 +78,14 @@ Navigate into each folder (listed below) to refer to their detailed README files
 ### What each folder contains 
 1. [`src`](src/): Contains the source code of the latest version of [WaterPaths](https://github.com/bernardoct/WaterPaths) used in this study.
 2. [scripts`](scripts/): Contains all the code required to perform the optimization, re-evaluation, and figure generation of this study. Each subfolder is numbered in order of which it should be completed.
-    1. [`scripts/0-Gen DU SOWs`](scripts/0-Gen%20DU%20SOWs/): Contains all the code required to generate the deeply uncertain (DU) factors and the implementation uncertainty ranges for the optimization and re-evaluation experiments.
-    1. [`scripts/1-Synthetic Streamflow Generation`](scripts/1-Synthetic%20Streamflow%20Generation/): Contains all the code required to generate synthetic traces of inflow, evaporation, and demand from historical data.
-    2. [`scripts/2-ROF Table Generation`](scripts/2-ROF%20Table%20Generation/): Contains all the code required to generate the Risk of Failure (ROF) tables needed to run the subsequent experiements. 
-    3. [`scripts/3-DU Optimization`](scripts/3-DU%20Optimization/): Contains all code and guidelines required to perform two versions of the DU Optimization experiment. Two types of DU Optimization experiments were conducted for this study: the Baseline Optimization experiment (no implementation uncertainty), and the IU Optimization (with implementation uncertainty).
-    4. [`scripts/4-DU Reevaluation`](scripts/4-DU%20Reevaluation/): Contains the code required to perform DU Re-Evaluation for calculating the robustness of each pathway strategy discovered in the DU Optimization step.
-    5. [`scripts/5-DU Reevaluation`](scripts/5-IU%20Reevaluation/): Contains the code required to perform IU Re-Evaluation for quantifying performance degradation of each pathway strategy when exposed to implementation uncertainty.
-    6. [`scripts/6-Figure Plotting`](scripts/6-Figure%20Plotting/): Contains the code required to generate most of the figures found in `figures`.
+    * [`scripts/0-Gen DU SOWs`](scripts/0-Gen%20DU%20SOWs/): Contains all the code required to generate the deeply uncertain (DU) factors and the implementation uncertainty ranges for the optimization and re-evaluation experiments.
+    * [`scripts/1-Synthetic Streamflow Generation`](scripts/1-Synthetic%20Streamflow%20Generation/): Contains all the code required to generate synthetic traces of inflow, evaporation, and demand from historical data.
+    * [`scripts/2-ROF Table Generation`](scripts/2-ROF%20Table%20Generation/): Contains all the code required to generate the Risk of Failure (ROF) tables needed to run the subsequent experiements. 
+    * [`scripts/3-DU Optimization`](scripts/3-DU%20Optimization/): Contains all code and guidelines required to perform two versions of the DU Optimization experiment. Two types of DU Optimization experiments were conducted for this study: the Baseline Optimization experiment (no implementation uncertainty), and the IU Optimization (with implementation uncertainty).
+    * [`scripts/4-DU Reevaluation`](scripts/4-DU%20Reevaluation/): Contains the code required to perform DU Re-Evaluation for calculating the robustness of each pathway strategy discovered in the DU Optimization step.
+    * [`scripts/5-IU Reevaluation`](scripts/5-IU%20Reevaluation/): Contains the code required to perform IU Re-Evaluation for quantifying performance degradation of each pathway strategy when exposed to implementation uncertainty.
+    * [`scripts/6-Figure Plotting`](scripts/6-Figure%20Plotting/): Contains the code required to generate most of the figures found in `figures`.
+    * [`scripts/7-Supporting Information`](scripts/7-Supporting%20Information/): Contains the code required to generate the figures and perform the Supporting Information analysis.
 3. [`figures`](figures/): Contains all the figures that can be found in the paper.
 
 ### Prerequisites
