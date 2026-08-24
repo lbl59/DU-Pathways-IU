@@ -3,14 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 import seaborn as sns
-from ..helper_functions_objs import *
 
 from matplotlib import colormaps, cm
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
 from matplotlib.lines import Line2D
 from pandas.plotting import parallel_coordinates
-from parallel_plot_functions import *
+
+from helper_functions_objs import *
+from helper_parallel_plot_functions import *
 
 # solutions of interest and the utility of whose parallel coordinates will be plotted. 
 # These values can be modified by the user 
@@ -115,6 +116,7 @@ custom_parallel_coordinates(fig, ax, objs_base_to_plot, columns_axes=axis_labels
                                 color_dict_categorical=sim_mode_colors_base,
                                 axis_mins=axis_mins, axis_maxs=axis_maxs) 
 
+# solution 29 from the baseline reference set
 custom_parallel_coordinates(fig, ax, baseline_df, columns_axes=axis_labels, 
                                 axis_labels=axis_labels, 
                                 ideal_direction='bottom',
@@ -125,7 +127,7 @@ custom_parallel_coordinates(fig, ax, baseline_df, columns_axes=axis_labels,
                                 color_dict_categorical=sim_mode_colors_base,
                                 axis_mins=axis_mins, axis_maxs=axis_maxs) 
 
-# solution 407 from the IU reference set
+# solution 552 from the IU reference set
 custom_parallel_coordinates(fig, ax, social_planner_IU_df, columns_axes=axis_labels, 
                                 axis_labels=axis_labels, 
                                 ideal_direction='bottom',
@@ -137,8 +139,7 @@ custom_parallel_coordinates(fig, ax, social_planner_IU_df, columns_axes=axis_lab
                                 axis_mins=axis_mins, axis_maxs=axis_maxs) 
 
 # create a legend 
-handles = [Line2D([0], [0], color=sim_mode_colors_IU['social planner'], lw=2, label='IU social planner coop'),
-           Line2D([0], [0], color=sim_mode_colors_IU['power index'], lw=2, label='IU power index coop'),
+handles = [Line2D([0], [0], color=sim_mode_colors_IU['social planner'], lw=2, label='IU SP'),
               Line2D([0], [0], color=sim_mode_colors_base['baseline'], lw=2, label='Baseline')]
 plt.legend(handles=handles, loc='lower center', fontsize=fontsize-4, frameon=False, bbox_to_anchor=(0.5, 0.0), ncols=5)
 

@@ -11,7 +11,7 @@ from matplotlib.patches import Rectangle
 from matplotlib.lines import Line2D
 from pandas.plotting import parallel_coordinates
 
-from ..parallel_plot_functions import *
+from helper_parallel_plot_functions import *
 
 # function to turn two colors into a colormap
 def two_color_cmap(color1, color2, num_points=100, reverse=False):

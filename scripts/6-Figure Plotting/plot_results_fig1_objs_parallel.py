@@ -11,7 +11,7 @@ from matplotlib.patches import Rectangle
 from matplotlib.lines import Line2D
 from pandas.plotting import parallel_coordinates
 
-from ..parallel_plot_functions import *
+from helper_parallel_plot_functions import *
 
 obj_names = ['REL', 'RF', 'INPC', 'PFC', 'WCC']
 util_abbrevs = ['W', 'D', 'F']
@@ -26,10 +26,10 @@ objs_F = [f'{obj}_F' for obj in obj_names]
 color_dict_coop = {'Base': "#588157", 'IU': "#F5A36D"}
 
 # change depending on whether the Expected or WC10 formulation is being used
-obj_mode = 'avg'  # avg or p10
+obj_mode = 'avg'  # avg or p90
 actions_mode = 'base'
 
-if obj_mode == 'p10':
+if obj_mode == 'p90':
     action_mode = 'IU'
 
 # change depending on where user would like to save the output

@@ -10,14 +10,14 @@ utilities = ['_W', '_D', '_F']
 util_dict = {'_W': 'Watertown', '_D': 'Dryville', '_F': 'Fallsland'}
 objs = ['REL', 'RF', 'INPC', 'PFC', 'WCC']
 
-sols_to_analyze = {'IU':[552], 'base':[29]}  # sol indices for each refset
-color_light_dict = {29: "#A8C4AC", 552: "#EAB46C"} 
-color_dark_dict = {29: "#39563D", 552: "#B66D0D"}
+sols_to_analyze = {'IU':[401], 'base':[29]}  # sol indices for each refset
+color_light_dict = {29: "#A8C4AC", 401: "#EAB46C"} 
+color_dark_dict = {29: "#39563D", 401: "#B66D0D"}
 
 # to change based on the user preference
 refset_name = 'IU'
 sim_mode = 'p90'
-sol_num = 552
+sol_num = 401
 output_path = f"results/sensitivity_analysis_{refset_name}_{sim_mode}_sol_{sol_num}.png"
 
 def rotate_owners(owner_order, current_utility):

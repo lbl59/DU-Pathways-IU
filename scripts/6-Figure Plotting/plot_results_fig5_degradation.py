@@ -14,6 +14,7 @@ from matplotlib.patches import Patch
 # user defined parameters for which solutions to plot and where to save the output figure
 sp_base_sol = 29
 sp_IU_sol = 401
+sim_mode = 'p90'
 output_figure_filepath = f'figures/perturbations_allsols_3dscatter_p90.pdf'
 
 obj_names = ['REL', 'RF', 'INPC', 'PFC', 'WCC']
