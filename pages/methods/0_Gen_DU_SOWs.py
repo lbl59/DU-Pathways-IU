@@ -35,16 +35,16 @@ render_method_step(
         "Before any simulation runs, we need a sample of Deeply Uncertain "
         "(DU) States of the World (SOWs) — combinations of demand growth, "
         "hydrology, and financial/regulatory parameters that the region "
-        "might plausibly face. This step uses Latin hypercube sampling to "
-        "draw 250 candidate SOWs (called RDMs, for Regional DU "
-        "Multipliers) spanning wide ranges for each uncertain parameter, "
+        "might plausibly face. This step uses Latin Hypercube sampling to "
+        "draw 200 candidate DU SOWs (also called RDMs, for Robust Decision-Making parameters"
+        "spanning wide ranges for each uncertain parameter, "
         "then converts the sampled values into the CSV format consumed by "
         "every downstream step."
     ),
     folder_relpath="scripts/0-Gen DU SOWs",
     scripts=SCRIPTS,
     about_text=(
-        "This is the first step in the DU Pathways IU methodology: sampling "
+        "This is the first step in the DU Pathways IU methodology: Sampling "
         "the deeply uncertain states of the world that everything else — "
         "synthetic streamflow generation, ROF tables, optimization, and "
         "re-evaluation — is conditioned on. See `scripts/0-Gen DU SOWs` in "
