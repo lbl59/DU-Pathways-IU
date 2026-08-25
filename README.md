@@ -10,7 +10,7 @@ Lillian Lau<sup>1\*</sup>, Patrick M. Reed<sup>1</sup>,  and David F. Gold<sup>2
 
 \* corresponding author:  lbl59@cornell.edu
 
-:sparkles: Explore our Interactive Repository here :sparkles:
+:sparkles: [**Explore our Interactive Repository here**](https://lbl59.github.io/DU-Pathways-IU/) :sparkles:
 
 ## :mailbox: Contents
 - [Abstract](#memo-abstract)
@@ -64,7 +64,7 @@ To cite this repository, use the citation below:
 [Back to contents](#mailbox-contents)
 
 ## :microscope: Explore our Interactive Repo
-Explore our interactive Streamlit repository here [INSERT LINK HERE] to view and interact with our code, data, and figures! 
+Explore our [interactive Streamlit repository here](https://lbl59.github.io/DU-Pathways-IU/) to view and interact with our code, data, and figures! 
 
 [Back to contents](#mailbox-contents)
 
@@ -98,7 +98,7 @@ Navigate into each folder (listed below) to refer to their detailed README files
 ## :bar_chart: Reproduce my figures
 Use the files found in the `figures` directory to reproduce the figures used in this publication. Follow the guidelines detailed in the README file of the [`scripts/Figure Plotting`](scripts/Figure%20Plotting/) directory.
 
-:microscope: You can also explore the figures interactively on [our Streamlit platform here].
+:microscope: You can also explore the figures interactively on [our Streamlit app here](https://lbl59.github.io/DU-Pathways-IU/).
 
 **Note**: Please complete all the steps listed in the `scripts` folder prior to reproducing the figures.
 
