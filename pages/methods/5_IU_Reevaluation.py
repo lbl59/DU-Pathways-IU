@@ -9,8 +9,7 @@ SCRIPTS = [
         description=(
             "Generates the perturbed decision-variable files consumed by "
             "the reevaluation scripts below. For a set of selected "
-            "solutions (hardcoded: `{'base': [29, 22, 13], "
-            "'IU': [466, 482, 377]}`), it applies decision-variable "
+            "solutions, it applies decision-variable "
             "perturbations (drawn from `rdm_ranges_actions_500conf_h.csv`) "
             "to each solution's baseline decision-variable values, clips "
             "the results to [0, 1], and writes "
