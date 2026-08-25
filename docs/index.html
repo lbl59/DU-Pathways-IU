@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DU Pathways IU — Interactive Results Explorer</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --fg: #1a1a18;
+    --muted: #5c5c58;
+    --card: #ffffff;
+    --border: #e2e1dc;
+    --accent: #2f6f4f;
+    --accent-fg: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17181a;
+      --fg: #ece9e2;
+      --muted: #a3a099;
+      --card: #202224;
+      --border: #34363a;
+      --accent: #5fb98a;
+      --accent-fg: #10241a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+  }
+  main {
+    max-width: 640px;
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+  h1 {
+    font-size: 1.6rem;
+    line-height: 1.3;
+    margin: 0 0 0.75rem;
+  }
+  p {
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0 0 1.5rem;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent);
+    color: var(--accent-fg);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+  }
+  .cta:hover { opacity: 0.92; }
+  .note {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  code {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>DU Pathways IU — Interactive Results Explorer</h1>
+  <p>
+    An interactive companion to the paper: a step-by-step walkthrough of the
+    methods, and clickable versions of the results figures. The app itself
+    runs on Google Cloud Run — click through to open it.
+  </p>
+  <a class="cta" href="https://REPLACE-WITH-YOUR-CLOUD-RUN-URL.a.run.app" target="_blank" rel="noopener">
+    Open the interactive app &rarr;
+  </a>
+  <p class="note">
+    First load may take a few seconds if the app has been idle
+    (Cloud Run scales to zero between visits).
+  </p>
+</main>
+</body>
+</html>

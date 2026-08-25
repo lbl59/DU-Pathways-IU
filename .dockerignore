@@ -1,0 +1,22 @@
+# Reproducibility artifacts not needed to run the Streamlit app
+results/
+scripts/
+src/
+TestFiles/
+
+# VCS / CI
+.git/
+.github/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Docs / misc
+*.md
+LICENSE
+CITATION.cff
+docs/

@@ -1,0 +1,82 @@
+name: Deploy Streamlit app to Cloud Run
+
+# Requires two repo secrets (Settings > Secrets and variables > Actions):
+#   GCP_PROJECT_ID - your Google Cloud project ID
+#   GCP_SA_KEY      - JSON key for a service account with these roles:
+#                      Artifact Registry Writer, Cloud Run Admin,
+#                      Service Account User
+#
+# Uncomment the "workflow_dispatch" trigger below to also allow running
+# this by hand from the Actions tab.
+
+on:
+  push:
+    branches: [interactive-repo]
+    paths:
+      - "streamlit_app.py"
+      - "hotspot_explorer.py"
+      - "method_step_explorer.py"
+      - "pages/**"
+      - "figures/**"
+      - "requirements.txt"
+      - "Dockerfile"
+      - ".github/workflows/deploy-cloud-run.yml"
+  workflow_dispatch: {}
+
+env:
+  SERVICE_NAME: du-pathways-iu
+  REGION: us-central1
+  REPOSITORY: du-pathways-iu
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Ensure Artifact Registry repo exists
+        run: |
+          gcloud artifacts repositories describe "$REPOSITORY" \
+            --location="$REGION" \
+            --project="${{ secrets.GCP_PROJECT_ID }}" \
+          || gcloud artifacts repositories create "$REPOSITORY" \
+            --repository-format=docker \
+            --location="$REGION" \
+            --project="${{ secrets.GCP_PROJECT_ID }}"
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+
+      - name: Build and push image
+        run: |
+          IMAGE="${REGION}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${REPOSITORY}/${SERVICE_NAME}:${{ github.sha }}"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloud-run@v2
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ env.REGION }}
+          image: ${{ env.IMAGE }}
+          flags: --allow-unauthenticated
+
+      - name: Print service URL
+        run: echo "Deployed to ${{ steps.deploy.outputs.url }}"
