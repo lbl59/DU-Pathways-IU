@@ -21,7 +21,7 @@ SCRIPTS = [
         kind="SLURM launcher",
         description=(
             "SLURM script (4 nodes × 50 tasks, 4 cpus/task, 2h) that "
-            "launches `genROFTables_reeval_script.py` via `srun -n 200 -c 4`."
+            "launches `genROFTables_reeval_script.py`."
         ),
     ),
     dict(
